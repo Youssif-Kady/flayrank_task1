@@ -1,0 +1,474 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/Youssif-Kady/flayrank_task1/blob/main/work/notebooks/w07_action_playbook.ipyn\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "JyekqRE_P2Oq"
+      },
+      "source": [
+        "# ML-10 — Content Action Playbook\n",
+        "\n",
+        "This skeleton is yours to fill. Work the sections **in order** — each one has a one-line hint. Simple words, honest numbers.\n",
+        "\n",
+        "> Working with an AI assistant? Tell it to read `skills/README.md` first and load the one skill this assignment names on its card."
+      ],
+      "id": "JyekqRE_P2Oq"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "zBvYFfFPP2Or"
+      },
+      "source": [
+        "## 1. Ranked actions + reason codes\n",
+        "\n",
+        "*The queue: what to do first, and why, in words a human trusts.*"
+      ],
+      "id": "zBvYFfFPP2Or"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Action 1: Refresh & Expand Content (Top Priority)\n",
+        "\n",
+        "Reason Code: HIGH_IMPRESSIONS_LOW_CTR\n",
+        "\n",
+        "Trigger: Predicted clicks > 1000, but actual past CTR < 3%.\n",
+        "\n",
+        "Why trust this: The model confirms high visibility (impressions). The low CTR suggests the title/meta description needs immediate optimization to capture existing demand.\n",
+        "\n",
+        "Action 2: Investigate Ranking Drop (Secondary Priority)\n",
+        "\n",
+        "Reason Code: SUDDEN_POSITION_DROP\n",
+        "\n",
+        "Trigger: Average position dropped by > 3 spots week-over-week.\n",
+        "\n",
+        "Why trust this: Organic traffic is highly sensitive to position changes on page 1. This action flags URLs that require a technical or content audit."
+      ],
+      "metadata": {
+        "id": "zbXkHkpFP2Os"
+      },
+      "id": "zbXkHkpFP2Os"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "0LUsO-ftP2Os"
+      },
+      "source": [
+        "## 2. Intended use and limits\n",
+        "\n",
+        "*Who uses this, for what — and where it stops being valid.*"
+      ],
+      "id": "0LUsO-ftP2Os"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Intended Use:\n",
+        "This playbook is designed for content and SEO teams to prioritize their weekly optimization queues. It highlights pages with the highest potential return on investment and flags urgent ranking issues.\n",
+        "\n",
+        "Limits (Where it stops being valid):\n",
+        "\n",
+        "Seasonality: The model does not account for sudden seasonal spikes. Recommendations during anomalous traffic periods should be paused.\n",
+        "\n",
+        "Brand vs. Non-Brand: The model treats all queries equally and cannot distinguish if a high CTR is simply due to a branded search term.\n",
+        "\n",
+        "New Content: This playbook relies on historical data. It cannot provide reliable actions for brand-new URLs with less than 30 days of history."
+      ],
+      "metadata": {
+        "id": "FcXwCmi7P2Os"
+      },
+      "id": "FcXwCmi7P2Os"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "zc_saHznP2Os"
+      },
+      "source": [
+        "## 3. Human review + the no-go list\n",
+        "\n",
+        "*What a person must check before acting. What should never be automated.*"
+      ],
+      "id": "zc_saHznP2Os"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Human Review Required Before Acting:\n",
+        "\n",
+        "Title/Meta Changes: Before changing a title tag for HIGH_IMPRESSIONS_LOW_CTR, a human must review the actual SERP to ensure the new title matches user intent.\n",
+        "\n",
+        "Technical Audits: For SUDDEN_POSITION_DROP, a human must check Google Search Console for manual actions or crawl errors before rewriting content.\n",
+        "\n",
+        "The No-Go List (Never Automate):\n",
+        "\n",
+        "Automated Deletions: Never automatically delete or redirect a page based solely on low predicted clicks.\n",
+        "\n",
+        "Automated Keyword Stuffing: Never allow a script to automatically inject keywords into titles based on model outputs without editorial review."
+      ],
+      "metadata": {
+        "id": "RqjbXgCiP2Os"
+      },
+      "id": "RqjbXgCiP2Os"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "JyQ-fzx_P2Ot"
+      },
+      "source": [
+        "## 4. Monitoring / retrain triggers\n",
+        "\n",
+        "*What would tell you the recommendations went stale?*"
+      ],
+      "id": "JyQ-fzx_P2Ot"
+    },
+    {
+      "cell_type": "markdown",
+      "source": [
+        "Monitoring Triggers (When recommendations went stale):\n",
+        "\n",
+        "Data Drift: Monitor the distribution of daily impressions. If the overall volume drops by more than 20% compared to the training data baseline, the predictions are likely stale.\n",
+        "\n",
+        "Algorithm Updates: If Google announces a confirmed core update, pause playbook actions for 14 days until SERP volatility settles.\n",
+        "\n",
+        "Retrain Triggers:\n",
+        "\n",
+        "Time-based: The model must be retrained every 30 days with fresh GSC data to capture shifting search trends.\n",
+        "\n",
+        "Performance-based: If the R2 score of the baseline model drops below 0.35 on a rolling 7-day validation set, trigger an immediate retrain."
+      ],
+      "metadata": {
+        "id": "YaF_P4tVP2Ot"
+      },
+      "id": "YaF_P4tVP2Ot"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "FE2_5DfLP2Ot"
+      },
+      "source": [
+        "## 5. Exports for the paper\n",
+        "\n",
+        "*Write the queue (and any figures you want to reuse) to work/outputs/ — your paper builds on these files.*"
+      ],
+      "id": "FE2_5DfLP2Ot"
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 223
+        },
+        "id": "r-k_LmSXP2Ot",
+        "outputId": "37757964-5fae-4f23-a2cc-2c09076997e9"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "✅ Action queue exported successfully to: work/outputs/w07_action_playbook_queue.csv\n"
+          ]
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "text/plain": [
+              "                 url  predicted_clicks               action_code priority\n",
+              "0         /product-a              1500  HIGH_IMPRESSIONS_LOW_CTR     High\n",
+              "1    /blog/seo-guide               850      SUDDEN_POSITION_DROP   Medium\n",
+              "2          /about-us               120        STABLE_PERFORMANCE      Low\n",
+              "3  /category/laptops               500  HIGH_IMPRESSIONS_LOW_CTR     High\n",
+              "4           /contact                40        STABLE_PERFORMANCE      Low"
+            ],
+            "text/html": [
+              "\n",
+              "  <div id=\"df-203c06f0-04ae-46cd-8867-943a38ac7cf7\" class=\"colab-df-container\">\n",
+              "    <div>\n",
+              "<style scoped>\n",
+              "    .dataframe tbody tr th:only-of-type {\n",
+              "        vertical-align: middle;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe tbody tr th {\n",
+              "        vertical-align: top;\n",
+              "    }\n",
+              "\n",
+              "    .dataframe thead th {\n",
+              "        text-align: right;\n",
+              "    }\n",
+              "</style>\n",
+              "<table border=\"1\" class=\"dataframe\">\n",
+              "  <thead>\n",
+              "    <tr style=\"text-align: right;\">\n",
+              "      <th></th>\n",
+              "      <th>url</th>\n",
+              "      <th>predicted_clicks</th>\n",
+              "      <th>action_code</th>\n",
+              "      <th>priority</th>\n",
+              "    </tr>\n",
+              "  </thead>\n",
+              "  <tbody>\n",
+              "    <tr>\n",
+              "      <th>0</th>\n",
+              "      <td>/product-a</td>\n",
+              "      <td>1500</td>\n",
+              "      <td>HIGH_IMPRESSIONS_LOW_CTR</td>\n",
+              "      <td>High</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>1</th>\n",
+              "      <td>/blog/seo-guide</td>\n",
+              "      <td>850</td>\n",
+              "      <td>SUDDEN_POSITION_DROP</td>\n",
+              "      <td>Medium</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>2</th>\n",
+              "      <td>/about-us</td>\n",
+              "      <td>120</td>\n",
+              "      <td>STABLE_PERFORMANCE</td>\n",
+              "      <td>Low</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>3</th>\n",
+              "      <td>/category/laptops</td>\n",
+              "      <td>500</td>\n",
+              "      <td>HIGH_IMPRESSIONS_LOW_CTR</td>\n",
+              "      <td>High</td>\n",
+              "    </tr>\n",
+              "    <tr>\n",
+              "      <th>4</th>\n",
+              "      <td>/contact</td>\n",
+              "      <td>40</td>\n",
+              "      <td>STABLE_PERFORMANCE</td>\n",
+              "      <td>Low</td>\n",
+              "    </tr>\n",
+              "  </tbody>\n",
+              "</table>\n",
+              "</div>\n",
+              "    <div class=\"colab-df-buttons\">\n",
+              "\n",
+              "  <div class=\"colab-df-container\">\n",
+              "    <button class=\"colab-df-convert\" onclick=\"convertToInteractive('df-203c06f0-04ae-46cd-8867-943a38ac7cf7')\"\n",
+              "            title=\"Convert this dataframe to an interactive table.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\" viewBox=\"0 -960 960 960\">\n",
+              "    <path d=\"M120-120v-720h720v720H120Zm60-500h600v-160H180v160Zm220 220h160v-160H400v160Zm0 220h160v-160H400v160ZM180-400h160v-160H180v160Zm440 0h160v-160H620v160ZM180-180h160v-160H180v160Zm440 0h160v-160H620v160Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "\n",
+              "  <style>\n",
+              "    .colab-df-container {\n",
+              "      display:flex;\n",
+              "      gap: 12px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert {\n",
+              "      background-color: #E8F0FE;\n",
+              "      border: none;\n",
+              "      border-radius: 50%;\n",
+              "      cursor: pointer;\n",
+              "      display: none;\n",
+              "      fill: #1967D2;\n",
+              "      height: 32px;\n",
+              "      padding: 0 0 0 0;\n",
+              "      width: 32px;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-convert:hover {\n",
+              "      background-color: #E2EBFA;\n",
+              "      box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "      fill: #174EA6;\n",
+              "    }\n",
+              "\n",
+              "    .colab-df-buttons div {\n",
+              "      margin-bottom: 4px;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert {\n",
+              "      background-color: #3B4455;\n",
+              "      fill: #D2E3FC;\n",
+              "    }\n",
+              "\n",
+              "    [theme=dark] .colab-df-convert:hover {\n",
+              "      background-color: #434B5C;\n",
+              "      box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "      filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "      fill: #FFFFFF;\n",
+              "    }\n",
+              "  </style>\n",
+              "\n",
+              "    <script>\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#df-203c06f0-04ae-46cd-8867-943a38ac7cf7 button.colab-df-convert');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      async function convertToInteractive(key) {\n",
+              "        const element = document.querySelector('#df-203c06f0-04ae-46cd-8867-943a38ac7cf7');\n",
+              "        const dataTable =\n",
+              "          await google.colab.kernel.invokeFunction('convertToInteractive',\n",
+              "                                                    [key], {});\n",
+              "        if (!dataTable) return;\n",
+              "\n",
+              "        const docLinkHtml = 'Like what you see? Visit the ' +\n",
+              "          '<a target=\"_blank\" href=https://colab.research.google.com/notebooks/data_table.ipynb>data table notebook</a>'\n",
+              "          + ' to learn more about interactive tables.';\n",
+              "        element.innerHTML = '';\n",
+              "        dataTable['output_type'] = 'display_data';\n",
+              "        await google.colab.output.renderOutput(dataTable, element);\n",
+              "        const docLink = document.createElement('div');\n",
+              "        docLink.innerHTML = docLinkHtml;\n",
+              "        element.appendChild(docLink);\n",
+              "      }\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "\n",
+              "  <div id=\"id_a7011d4a-c704-4205-bd95-234cc58cbc66\">\n",
+              "    <style>\n",
+              "      .colab-df-generate {\n",
+              "        background-color: #E8F0FE;\n",
+              "        border: none;\n",
+              "        border-radius: 50%;\n",
+              "        cursor: pointer;\n",
+              "        display: none;\n",
+              "        fill: #1967D2;\n",
+              "        height: 32px;\n",
+              "        padding: 0 0 0 0;\n",
+              "        width: 32px;\n",
+              "      }\n",
+              "\n",
+              "      .colab-df-generate:hover {\n",
+              "        background-color: #E2EBFA;\n",
+              "        box-shadow: 0px 1px 2px rgba(60, 64, 67, 0.3), 0px 1px 3px 1px rgba(60, 64, 67, 0.15);\n",
+              "        fill: #174EA6;\n",
+              "      }\n",
+              "\n",
+              "      [theme=dark] .colab-df-generate {\n",
+              "        background-color: #3B4455;\n",
+              "        fill: #D2E3FC;\n",
+              "      }\n",
+              "\n",
+              "      [theme=dark] .colab-df-generate:hover {\n",
+              "        background-color: #434B5C;\n",
+              "        box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.15);\n",
+              "        filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3));\n",
+              "        fill: #FFFFFF;\n",
+              "      }\n",
+              "    </style>\n",
+              "    <button class=\"colab-df-generate\" onclick=\"generateWithVariable('df_action_queue')\"\n",
+              "            title=\"Generate code using this dataframe.\"\n",
+              "            style=\"display:none;\">\n",
+              "\n",
+              "  <svg xmlns=\"http://www.w3.org/2000/svg\" height=\"24px\"viewBox=\"0 0 24 24\"\n",
+              "       width=\"24px\">\n",
+              "    <path d=\"M7,19H8.4L18.45,9,17,7.55,7,17.6ZM5,21V16.75L18.45,3.32a2,2,0,0,1,2.83,0l1.4,1.43a1.91,1.91,0,0,1,.58,1.4,1.91,1.91,0,0,1-.58,1.4L9.25,21ZM18.45,9,17,7.55Zm-12,3A5.31,5.31,0,0,0,4.9,8.1,5.31,5.31,0,0,0,1,6.5,5.31,5.31,0,0,0,4.9,4.9,5.31,5.31,0,0,0,6.5,1,5.31,5.31,0,0,0,8.1,4.9,5.31,5.31,0,0,0,12,6.5,5.46,5.46,0,0,0,6.5,12Z\"/>\n",
+              "  </svg>\n",
+              "    </button>\n",
+              "    <script>\n",
+              "      (() => {\n",
+              "      const buttonEl =\n",
+              "        document.querySelector('#id_a7011d4a-c704-4205-bd95-234cc58cbc66 button.colab-df-generate');\n",
+              "      buttonEl.style.display =\n",
+              "        google.colab.kernel.accessAllowed ? 'block' : 'none';\n",
+              "\n",
+              "      buttonEl.onclick = () => {\n",
+              "        google.colab.notebook.generateWithVariable('df_action_queue');\n",
+              "      }\n",
+              "      })();\n",
+              "    </script>\n",
+              "  </div>\n",
+              "\n",
+              "    </div>\n",
+              "  </div>\n"
+            ],
+            "application/vnd.google.colaboratory.intrinsic+json": {
+              "type": "dataframe",
+              "variable_name": "df_action_queue",
+              "summary": "{\n  \"name\": \"df_action_queue\",\n  \"rows\": 5,\n  \"fields\": [\n    {\n      \"column\": \"url\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 5,\n        \"samples\": [\n          \"/blog/seo-guide\",\n          \"/contact\",\n          \"/about-us\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"predicted_clicks\",\n      \"properties\": {\n        \"dtype\": \"number\",\n        \"std\": 597,\n        \"min\": 40,\n        \"max\": 1500,\n        \"num_unique_values\": 5,\n        \"samples\": [\n          850,\n          40,\n          120\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"action_code\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 3,\n        \"samples\": [\n          \"HIGH_IMPRESSIONS_LOW_CTR\",\n          \"SUDDEN_POSITION_DROP\",\n          \"STABLE_PERFORMANCE\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    },\n    {\n      \"column\": \"priority\",\n      \"properties\": {\n        \"dtype\": \"string\",\n        \"num_unique_values\": 3,\n        \"samples\": [\n          \"High\",\n          \"Medium\",\n          \"Low\"\n        ],\n        \"semantic_type\": \"\",\n        \"description\": \"\"\n      }\n    }\n  ]\n}"
+            }
+          },
+          "metadata": {}
+        }
+      ],
+      "source": [
+        "import pandas as pd\n",
+        "import os\n",
+        "\n",
+        "# Creating a simulated ranked queue based on our defined actions\n",
+        "data = {\n",
+        "    'url': ['/product-a', '/blog/seo-guide', '/about-us', '/category/laptops', '/contact'],\n",
+        "    'predicted_clicks': [1500, 850, 120, 500, 40],\n",
+        "    'action_code': ['HIGH_IMPRESSIONS_LOW_CTR', 'SUDDEN_POSITION_DROP', 'STABLE_PERFORMANCE', 'HIGH_IMPRESSIONS_LOW_CTR', 'STABLE_PERFORMANCE'],\n",
+        "    'priority': ['High', 'Medium', 'Low', 'High', 'Low']\n",
+        "}\n",
+        "\n",
+        "df_action_queue = pd.DataFrame(data)\n",
+        "\n",
+        "# Ensure the output directory exists\n",
+        "output_dir = 'work/outputs'\n",
+        "os.makedirs(output_dir, exist_ok=True)\n",
+        "\n",
+        "# Export the DataFrame to CSV\n",
+        "csv_path = os.path.join(output_dir, 'w07_action_playbook_queue.csv')\n",
+        "df_action_queue.to_csv(csv_path, index=False)\n",
+        "\n",
+        "print(f\"✅ Action queue exported successfully to: {csv_path}\")\n",
+        "display(df_action_queue)"
+      ],
+      "id": "r-k_LmSXP2Ot"
+    },
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "qUojqvlEP2Ot"
+      },
+      "source": [
+        "## Self-check\n",
+        "\n",
+        "Before you submit, confirm each line honestly:\n",
+        "\n",
+        "- [ ] Every section above is filled — markdown thinking AND the code that backs it\n",
+        "- [ ] The notebook runs top to bottom with no errors (Runtime → Run all)\n",
+        "- [ ] No client names, URLs, or private queries anywhere\n",
+        "- [ ] My claims use careful words: observed, measured, directional, decision-support\n",
+        "- [ ] Committed to my repo under `work/notebooks/` — then submit your repo URL on the card. Done."
+      ],
+      "id": "qUojqvlEP2Ot"
+    }
+  ],
+  "metadata": {
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    },
+    "colab": {
+      "provenance": [],
+      "include_colab_link": true
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 5
+}
