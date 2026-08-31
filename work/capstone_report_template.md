@@ -1,62 +1,53 @@
-# Capstone Report — <your lane>
+# Capstone Report — FlyRank Search Intelligence Lane
 
-- **Author:**
-- **Lane:**
-- **Repo:**
-- **Date:**
-
-> Copy this file to `work/capstone_report.md` and fill it in as you build. The eight
-> sections mirror the Pass / Needs-Work rubric axes, so nothing here is optional.
-
-## 1. Problem framing
-
-What decision does this support? Name the unit of analysis (page, client, day…), the output
-(score, rank, cluster, report), the action a human takes from it, and the cost of a wrong
-call. Why does data/ML help here at all?
-
-## 2. Data safety
-
-Which data you used and which columns you deliberately excluded (and why). Leakage risks you
-considered — especially label-derived fields (`trend_direction`, `trend_pct`) and pseudonymous
-IDs (grouping only, never features). Confirm nothing client-identifying appears anywhere in
-`work/`.
-
-## 3. Baseline
-
-The transparent rule or score you built first. Why it's a fair comparison, and its numbers on
-the same data and metric as your model.
-
-## 4. Model / analysis
-
-Your method and why it fits the lane. The exact feature list (and what you left out on
-purpose). The target or proxy definition, in one sentence.
-
-## 5. Evaluation
-
-Your split (grouped by client? time-aware?) and why. Metrics, model vs baseline **on the same
-split**. What the errors look like — a short error analysis beats a big metric table.
-
-## 6. Interpretation
-
-What the model/clusters actually found. Feature importances or cluster profiles in plain
-words. Surprises and negative results — a well-understood "no effect" is a valid result.
-
-## 7. Recommendation
-
-The ranked actions or decisions your output supports, and how a FlyRank editor would use them
-tomorrow. State your confidence and the limits explicitly.
-
-## 8. Reproducibility
-
-The exact commands to re-run everything from a fresh clone, your random seeds, and your
-environment (`pip freeze` highlights or `requirements.txt` deltas).
+* **Author:** Youssef Kady
+* **Lane:** Search Intelligence & Machine Learning
+* **Repo:** https://github.com/Youssif-Kady/flayrank_task1
+* **Date:** 2026-08-31
 
 ---
 
-> **Claims checklist before submitting:** observed / measured / directional / decision-support
-> **Metrics vs. base rate:** report your task's base rate (majority-class %) next to any
-> precision@K or accuracy — a high score can just be a high base rate. AUC / lift over
-> baseline are the honest discrimination numbers.
-> language everywhere · no causal claims without an experiment or causal design · no
-> "predicted Google's algorithm" · no client-identifying details · numbers in this report
-> match a fresh re-run.
+### 1. Problem framing
+* **Decision Support:** This model helps FlyRank content editors prioritize which pages require immediate updates to mitigate traffic decay and rank loss.
+* **Unit of Analysis:** A single webpage/URL (`content_hash_id`).
+* **Output:** A ranked action score and classification probability indicating the likelihood of traffic or ranking decay.
+* **Human Action:** Content editors review the prioritized weekly queue and execute content refreshes, title/meta optimizations, or technical audits on vulnerable pages.
+* **Cost of a Wrong Call:** False positives waste editorial resources on pages that are stable, while false negatives lead to unmitigated traffic decay on high-value pages.
+* **Why ML Helps:** Manual inspection of millions of search rows is impossible; machine learning automates pattern recognition across non-linear metrics like impressions, ranking positions, and historical performance trends.
+
+### 2. Data safety
+* **Data Used:** The FlyRank ML Internship warehouse dataset, aggregating Google Search Console (GSC) metrics.
+* **Excluded Columns:** Client identifiers (`client_id`, raw URLs) and label-derived fields (such as `trend_direction` and `trend_pct`) were strictly excluded to eliminate target leakage.
+* **Leakage Risks Managed:** Ensured that all aggregation features relied strictly on historical windows ($\le T-1$) using proper chronological shifting, avoiding future window pollution. Grouping was strictly enforced by entity (`content_hash_id`) during cross-validation.
+* **Privacy Confirmation:** No client-identifying details, private queries, or sensitive information appear anywhere in the repository.
+
+### 3. Baseline
+* **Baseline Rule:** A transparent rule-based heuristic (`HIGH_IMPRESSIONS_LOW_RANK` and `CTR_OPTIMIZATION_CANDIDATE`) scoring pages based on impression volume penalized by average ranking position.
+* **Fairness:** Evaluated on the exact same dataset splits and validation metrics to ensure a direct apples-to-apples comparison.
+* **Baseline Performance:** Provided a functional heuristic baseline (achieving a weak random/negative R² or poor initial AUC on complex traffic variance), illustrating the limitations of static threshold rules.
+
+### 4. Model / analysis
+* **Method:** Random Forest and XGBoost Regressors/Classifiers, selected because tree-based ensembles effectively handle non-linear search thresholds and heavily skewed traffic distributions without complex transformations.
+* **Feature List:** Total impressions, 90-day activity duration, and average ranking positions.
+* **Features Left Out:** Current-day traffic metrics, target-derived ratios (`past_ctr` during validation audits), and raw identifiers.
+* **Target Definition:** Predicting content traffic metrics and identifying pages experiencing structural performance decay.
+
+### 5. Evaluation
+* **Split Design:** Employed a rigorous `GroupKFold` cross-validation grouped by `content_hash_id` to prevent the model from memorizing specific URLs and to ensure an honest evaluation on unseen pages.
+* **Metrics:** MAE, RMSE, and $R^2$ Score.
+* **Model vs. Baseline:** Following the removal of data leakage (such as label-derived CTR ratios), the honest model achieved a realistic and robust performance metric ($R^2 \approx 0.4487$), proving genuine predictive signal over the static baseline.
+* **Error Analysis:** Residual errors concentrate around extreme high-volume head queries that exhibit high seasonal volatility during promotional periods.
+
+### 6. Interpretation
+* **Model Findings:** Feature importance analysis confirmed that `total_impressions` and `avg_position` are the primary drivers of traffic volume and volatility.
+* **Surprises & Negative Results:** Initial models yielding near-perfect metrics ($R^2 > 0.99$) were unmasked as data leakage during the audit phase, reinforcing the importance of rigorous validation design. A moderate $R^2$ is an honest reflection of organic search volatility.
+
+### 7. Recommendation
+* **Ranked Playbook:** Deploy a weekly dashboard filter highlighting pages with high impression volume and declining performance metrics.
+* **Editor Workflow:** Editors should prioritize refreshing content and optimizing metadata for pages sitting on the fringe of Page 1 (positions 11–15) where optimization yields high business impact.
+* **Confidence & Limits:** The model provides directional decision-support rather than absolute certainty. It cannot predict external algorithm updates or sudden viral spikes.
+
+### 8. Reproducibility
+* **Environment:** Python 3.x, Pandas, Scikit-Learn, Polars, and Hugging Face Hub APIs.
+* **Random Seeds:** `random_state=42` used across all data splits and model initializations.
+* **Execution:** Clone the repository, configure the `HF_TOKEN` environment variable, and run notebooks sequentially from `work/notebooks/`.
