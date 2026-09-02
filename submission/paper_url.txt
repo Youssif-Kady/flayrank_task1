@@ -1,1 +1,1 @@
-https://nbviewer.org/github/Youssif-Kady/flayrank_task1/blob/main/work/notebooks/capstone.ipynb
+https://youssif-kady.github.io/flayrank_task1/
